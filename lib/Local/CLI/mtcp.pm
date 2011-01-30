@@ -7,10 +7,10 @@ package Local::CLI::mtcp;
 
 =head1 VERSION
 
-This documentation describes version 0.01
+This documentation describes version 0.02
 
 =cut
-use version;      our $VERSION = qv( 0.01 );
+use version;      our $VERSION = qv( 0.02 );
 
 use warnings;
 use strict;
@@ -21,7 +21,7 @@ use IO::Select;
 use Pod::Usage;
 use Getopt::Long;
 
-use Range::String;
+use Local::Range;
 use Multiplex::TCP;
 use Util::AsyncIO::RW;
 use Util::Getopt::Menu;
@@ -107,7 +107,7 @@ sub main
     );
 
     my $port = ':' . $option{p};
-    my $target = Range::String->new( $option{r} )->list();
+    my $target = Local::Range->new( $option{r} )->list();
 
     YAML::XS::DumpFile \*STDOUT, _run( \%config, \%run, $target, $port )
         if @$target;
@@ -137,7 +137,7 @@ sub _run
             $output =~ s/\n+$//;
             map { $_ =~ s/$port$// } @$target;
 
-            $tally{ Range::String->serial( \@$target ) } = $output;
+            $tally{ Local::Range->serial( \@$target ) } = $output;
         }
     }
     
